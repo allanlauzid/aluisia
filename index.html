@@ -2,737 +2,88 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Política de Privacidade - Assistente Virtual Aluisia</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Política de Privacidade do Assistente Virtual Aluisia, atendimento via WhatsApp para alunos e funcionários dos polos acadêmicos.">
+<title>Aluisia · Painel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Painel de administração da Aluisia, assistente virtual de atendimento via WhatsApp.">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aluisia">
+<meta name="referrer" content="no-referrer">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon-64.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://aluisiogondim.app.n8n.cloud" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Lato:wght@400;700&family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink: #0f172a;
-    --ink-soft: #334155;
-    --muted: #64748b;
-    --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
-    --bg: #f4f7f9;
-    --surface: #ffffff;
-    --line: #e2e8f0;
-    --accent: #155e75;
-    --accent-soft: #0e4a5e;
-    --accent-bright: #1f8aa8;
-    --accent-tint: color-mix(in srgb, var(--accent) 10%, transparent);
-    --radius: 12px;
-    --panel-radius: 20px;
-    --max-content: 68ch;
-  }
-
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink-soft);
-    font-family: 'Lato', Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-    overflow-wrap: break-word;
-    overflow-x: hidden;
-  }
-
-  img, picture, video, canvas, svg { display: block; max-width: 100%; }
-
-  a { color: var(--accent-bright); text-decoration-thickness: 1px; text-underline-offset: 2px; transition: color 150ms var(--ease-out); }
-  a:hover { color: var(--ink); }
-  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
-
-  /* ---- Grain overlay (fixed, decorative) ---- */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    pointer-events: none;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* ---- Hero header (drenched) ---- */
-
-  header.hero {
-    position: relative;
-    background:
-      radial-gradient(900px 500px at 15% -10%, color-mix(in srgb, var(--accent-bright) 35%, transparent), transparent 60%),
-      linear-gradient(160deg, var(--ink) 0%, var(--accent-soft) 55%, var(--accent) 100%);
-    color: white;
-    padding: 56px 24px 96px;
-    overflow: hidden;
-  }
-
-  header.hero::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 48px;
-    background: var(--bg);
-    clip-path: polygon(0 100%, 100% 100%, 100% 40%, 0 100%);
-  }
-
-  .hero-inner { max-width: 1160px; margin: 0 auto; position: relative; z-index: 1; }
-
-  .brand-mark {
-    display: block;
-    margin: 0 0 60px;
-  }
-  .brand-mark img {
-    width: clamp(180px, 18vw, 280px);
-    height: auto;
-    display: block;
-    filter: drop-shadow(0 0 1px rgba(255,255,255,0.55)) drop-shadow(0 6px 18px rgba(0,0,0,0.35));
-  }
-
-  .brand-name {
-    font-family: 'Baloo 2', 'Lato', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-
-  .footer-brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    vertical-align: middle;
-  }
-  .footer-brand img { width: 22px; height: 22px; display: block; flex: none; }
-
-  h1 {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-weight: 700;
-    font-size: clamp(2.6rem, 2rem + 5vw, 5.4rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: white;
-    margin: 0 0 22px;
-    white-space: nowrap;
-    max-width: none;
-  }
-  h1 em { font-style: italic; font-weight: 600; color: #d7f4ff; }
-
-  .hero-sub {
-    max-width: 52ch;
-    margin: 0 0 32px;
-    color: rgba(255,255,255,0.82);
-    font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.4rem);
-  }
-
-  .updated {
-    color: white;
-    font-size: 0.95rem;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-  }
-
-  /* ---- Layout shell ---- */
-
-  .shell {
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 40px;
-    align-items: start;
-  }
-
-  /* ---- TOC panel: dark, detached ---- */
-
-  nav.toc {
-    position: sticky;
-    top: 28px;
-    align-self: start;
-    margin-top: -56px;
-    border-radius: var(--panel-radius);
-    background: linear-gradient(165deg, var(--ink) 0%, var(--accent-soft) 130%);
-    padding: 22px;
-    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.28);
-    z-index: 2;
-  }
-
-  nav.toc .toc-title {
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.6);
-    margin: 0 0 14px;
-    font-weight: 700;
-    padding: 0 8px;
-  }
-
-  nav.toc .toc-body { display: grid; grid-template-columns: auto 1fr; gap: 4px; }
-
-  nav.toc .progress-track {
-    position: relative;
-    margin-left: 8px;
-    width: 3px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.14);
-    overflow: hidden;
-  }
-  nav.toc .progress-fill {
-    position: absolute; top: 0; left: 0; width: 100%; height: 0%;
-    background: var(--accent-bright);
-    box-shadow: 0 0 12px var(--accent-bright);
-    border-radius: inherit;
-    transition: height 120ms linear;
-  }
-
-  nav.toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-
-  nav.toc a {
-    display: flex; align-items: baseline; gap: 8px;
-    border-radius: 10px;
-    padding: 9px 10px;
-    color: rgba(255,255,255,0.78);
-    font-size: 0.92rem;
-    text-decoration: none;
-    transition: color 200ms var(--ease-out), background-color 200ms var(--ease-out);
-  }
-  nav.toc a .num { font-variant-numeric: tabular-nums; font-size: 0.75rem; color: rgba(255,255,255,0.45); min-width: 1.1em; }
-  nav.toc a:hover { color: white; background: rgba(255,255,255,0.08); }
-  nav.toc a:active { background: rgba(255,255,255,0.16); transition-duration: 80ms; }
-  nav.toc a.active { color: white; font-weight: 700; background: color-mix(in srgb, var(--accent-bright) 30%, transparent); }
-  nav.toc a.active .num { color: var(--accent-bright); }
-
-  details.toc-mobile { display: none; }
-
-  /* ---- Main content ---- */
-
-  main { max-width: var(--max-content); padding: 64px 0 96px; position: relative; }
-
-  .sections { position: relative; }
-
-  .sections::before {
-    content: "";
-    position: absolute;
-    left: 47px;
-    top: 0;
-    bottom: 40px;
-    width: 3px;
-    background: linear-gradient(var(--accent) 0%, color-mix(in srgb, var(--accent) 15%, transparent) 100%);
-    border-radius: 999px;
-  }
-
-  .intro { font-size: 1.05rem; color: var(--ink-soft); margin: 0 0 40px; }
-
-  section.card {
-    position: relative;
-    margin-bottom: 40px;
-    padding: 32px 32px 32px 84px;
-    border: 2px solid var(--accent);
-    border-radius: var(--panel-radius);
-    background: var(--surface);
-    box-shadow:
-      0 0 0 8px color-mix(in srgb, var(--accent) 6%, transparent),
-      0 18px 40px rgba(15, 23, 42, 0.09);
-    overflow: hidden;
-  }
-
-  section.card .ghost-num {
-    position: absolute;
-    right: -6px;
-    top: -34px;
-    font-family: 'EB Garamond', serif;
-    font-weight: 700;
-    font-size: 9rem;
-    line-height: 1;
-    color: color-mix(in srgb, var(--accent) 7%, transparent);
-    pointer-events: none;
-    user-select: none;
-  }
-
-  section.card .index {
-    position: absolute;
-    left: 28px;
-    top: 32px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: linear-gradient(160deg, var(--accent-bright), var(--accent-soft));
-    color: white;
-    font-family: 'EB Garamond', serif;
-    font-weight: 700;
-    font-size: 1.15rem;
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 45%, transparent);
-  }
-
-  h2 {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--ink);
-    margin: 0 0 14px;
-    position: relative;
-  }
-
-  section.card p, section.card li { max-width: var(--max-content); position: relative; }
-  section.card p { margin: 0 0 14px; }
-  section.card p:last-child { margin-bottom: 0; }
-
-  ul.plain { margin: 0; padding-left: 20px; position: relative; }
-  ul.plain li { margin-bottom: 8px; }
-  ul.plain li:last-child { margin-bottom: 0; }
-
-  strong { color: var(--ink); }
-
-  .contact-box {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 6px;
-    padding: 12px 18px;
-    background: var(--bg);
-    border: 2px solid var(--accent);
-    border-radius: var(--radius);
-    font-size: 0.95rem;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-
-  .contact-box.copyable {
-    font-family: inherit;
-    color: var(--accent-soft);
-    cursor: pointer;
-    transition: background-color 150ms var(--ease-out), transform 120ms var(--ease-out), border-color 150ms var(--ease-out);
-  }
-  .contact-box.copyable svg { flex: none; color: var(--accent); }
-  .contact-box.copyable:hover { background: color-mix(in srgb, var(--accent) 8%, var(--bg)); border-color: var(--accent-bright); }
-  .contact-box.copyable:active { transform: scale(0.98); transition-duration: 80ms; }
-  .contact-box.copyable.copied { border-color: #16a34a; }
-  .contact-box.copyable.copied svg { color: #16a34a; }
-
-  /* ---- Toast ---- */
-
-  #toast {
-    position: fixed;
-    left: 50%;
-    bottom: 32px;
-    transform: translate(-50%, 16px);
-    z-index: 80;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
-    border-radius: 999px;
-    background: var(--ink);
-    color: white;
-    font-size: 0.9rem;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
-  }
-  #toast.visible { opacity: 1; transform: translate(-50%, 0); }
-  #toast svg { color: #4ade80; flex: none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    #toast { transition: opacity 150ms linear; }
-  }
-
-  footer.site-footer {
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 32px 24px 64px;
-    color: var(--muted);
-    font-size: 0.85rem;
-    border-top: 1px solid var(--line);
-  }
-
-  /* ---- Back to top: bigger, with progress ring ---- */
-
-  #back-to-top-wrap {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    width: 64px;
-    height: 64px;
-    z-index: 70;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms var(--ease-out);
-  }
-  #back-to-top-wrap.visible { opacity: 1; pointer-events: auto; }
-
-  #back-to-top-wrap svg.ring { position: absolute; inset: 0; transform: rotate(-90deg); }
-  #back-to-top-wrap .ring-bg { fill: none; stroke: var(--line); stroke-width: 4; }
-  #back-to-top-wrap .ring-fg {
-    fill: none; stroke: var(--accent-bright); stroke-width: 4; stroke-linecap: round;
-    stroke-dasharray: 176; stroke-dashoffset: 176;
-    transition: stroke-dashoffset 120ms linear;
-  }
-
-  #back-to-top {
-    position: absolute;
-    inset: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
-    color: var(--accent-soft);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 120ms var(--ease-out), box-shadow 200ms var(--ease-out);
-  }
-  #back-to-top:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(15, 23, 42, 0.2); }
-  #back-to-top:active { transform: scale(0.92); transition-duration: 80ms; }
-
-  @media (prefers-reduced-transparency: reduce) {
-    #back-to-top { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; border-color: var(--line); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    #back-to-top-wrap, #back-to-top { transition: none; }
-    section.reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
-    .progress-fill, .ring-fg { transition: none; }
-  }
-
-  @media (min-width: 601px) {
-    section.reveal {
-      opacity: 0;
-      transform: translateY(24px) scale(0.97);
-      filter: blur(6px);
-      transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out), filter 650ms var(--ease-out);
-    }
-    section.reveal.in-view { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  }
-
-  @media (max-width: 900px) {
-    .shell { grid-template-columns: 1fr; gap: 0; }
-    nav.toc.desktop { display: none; }
-    .sections::before { left: 34px; }
-
-    details.toc-mobile {
-      display: block;
-      margin: -40px 0 28px;
-      position: relative;
-      z-index: 2;
-      border-radius: var(--panel-radius);
-      background: linear-gradient(165deg, var(--ink) 0%, var(--accent-soft) 130%);
-      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.25);
-      padding: 4px 18px;
-      color: white;
-    }
-    details.toc-mobile summary {
-      cursor: pointer;
-      padding: 14px 0;
-      font-weight: 700;
-      font-size: 0.92rem;
-      color: white;
-    }
-    details.toc-mobile ol { list-style: none; margin: 0; padding: 0 0 14px; display: flex; flex-direction: column; gap: 2px; }
-    details.toc-mobile a { display: block; padding: 7px 0; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.92rem; }
-    details.toc-mobile a:hover { color: white; }
-
-    section.card { padding: 26px 20px 26px 68px; }
-    section.card .index { left: 18px; top: 24px; width: 34px; height: 34px; }
-    section.card .ghost-num { font-size: 6rem; top: -20px; }
-  }
-
-  @media (max-width: 600px) {
-    header.hero { padding: 56px 20px 88px; }
-    h1 { font-size: 1.7rem; white-space: normal; }
-    .hero-sub { max-width: none; }
-    .brand-mark { margin-bottom: 20px; }
-  }
-</style>
+<link rel="stylesheet" href="assets/style.css?v=1">
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-inner">
-    <span class="brand-mark"><img src="logotipo.svg" alt="Aluisia" width="340" height="113"></span>
-    <h1>Política de <em>Privacidade</em></h1>
-    <p class="hero-sub">Como o assistente de atendimento via WhatsApp coleta, usa e protege as informações de alunos e funcionários dos polos acadêmicos.</p>
-    <p class="updated">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 2l8 3v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V5l8-3z"></path>
-        <path d="M9 12l2 2 4-4"></path>
-      </svg>
-      Última atualização: 28 de julho de 2026
-    </p>
-  </div>
-</header>
-
-<div class="shell">
-  <nav class="toc desktop" aria-label="Sumário">
-    <p class="toc-title">NESTA PÁGINA</p>
-    <div class="toc-body">
-      <div class="progress-track"><div class="progress-fill" id="toc-progress"></div></div>
-      <ol>
-        <li><a href="#quem-somos"><span class="num">01</span> Quem somos</a></li>
-        <li><a href="#dados-coletados"><span class="num">02</span> Dados coletados</a></li>
-        <li><a href="#uso-dos-dados"><span class="num">03</span> Uso dos dados</a></li>
-        <li><a href="#compartilhamento"><span class="num">04</span> Compartilhamento</a></li>
-        <li><a href="#seguranca"><span class="num">05</span> Segurança</a></li>
-        <li><a href="#retencao"><span class="num">06</span> Retenção dos dados</a></li>
-        <li><a href="#direitos"><span class="num">07</span> Direitos do usuário</a></li>
-        <li><a href="#contato"><span class="num">08</span> Contato</a></li>
-        <li><a href="#alteracoes"><span class="num">09</span> Alterações</a></li>
-      </ol>
-    </div>
-  </nav>
-
-  <main>
-    <details class="toc-mobile">
-      <summary>Sumário desta página</summary>
-      <ol>
-        <li><a href="#quem-somos">01 &middot; Quem somos</a></li>
-        <li><a href="#dados-coletados">02 &middot; Dados coletados</a></li>
-        <li><a href="#uso-dos-dados">03 &middot; Uso dos dados</a></li>
-        <li><a href="#compartilhamento">04 &middot; Compartilhamento</a></li>
-        <li><a href="#seguranca">05 &middot; Segurança</a></li>
-        <li><a href="#retencao">06 &middot; Retenção dos dados</a></li>
-        <li><a href="#direitos">07 &middot; Direitos do usuário</a></li>
-        <li><a href="#contato">08 &middot; Contato</a></li>
-        <li><a href="#alteracoes">09 &middot; Alterações</a></li>
-      </ol>
-    </details>
-
-    <p class="intro">Esta Política de Privacidade descreve como o Assistente Virtual Aluisia ("nós", "nosso" ou "Assistente") coleta, usa e protege as informações de alunos e funcionários que interagem com o serviço via WhatsApp.</p>
-
-    <div class="sections">
-    <section id="quem-somos" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">01</span>
-      <span class="index" aria-hidden="true">1</span>
-      <h2>Quem somos</h2>
-      <p>Aluisia é o assistente virtual de atendimento via WhatsApp, operado sob responsabilidade de Aluísio Gondim, gestor de polos acadêmicos, com o objetivo de auxiliar alunos e funcionários com dúvidas sobre matrículas, notas, procedimentos acadêmicos e uso da plataforma Studeo. O acesso ao Assistente é destinado exclusivamente a alunos e funcionários vinculados aos polos acadêmicos administrados por Aluísio Gondim; não se trata de um canal de atendimento aberto ao público em geral.</p>
-    </section>
-
-    <section id="dados-coletados" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">02</span>
-      <span class="index" aria-hidden="true">2</span>
-      <h2>Quais dados coletamos</h2>
-      <ul class="plain">
-        <li>Número de telefone do WhatsApp utilizado para enviar mensagens ao Assistente.</li>
-        <li>Conteúdo das mensagens trocadas com o Assistente (perguntas, respostas e histórico da conversa).</li>
-        <li>Metadados técnicos da mensagem fornecidos pela plataforma WhatsApp Business (Meta), como horário de envio e status de entrega.</li>
-      </ul>
-    </section>
-
-    <section id="uso-dos-dados" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">03</span>
-      <span class="index" aria-hidden="true">3</span>
-      <h2>Como usamos os dados</h2>
-      <ul class="plain">
-        <li>Responder às dúvidas enviadas, utilizando uma base de conhecimento interna e, quando necessário, inteligência artificial para gerar respostas.</li>
-        <li>Manter o histórico da conversa para dar continuidade ao atendimento.</li>
-        <li>Encaminhar ao responsável humano (Aluísio) as dúvidas que o Assistente não consiga responder automaticamente.</li>
-      </ul>
-    </section>
-
-    <section id="compartilhamento" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">04</span>
-      <span class="index" aria-hidden="true">4</span>
-      <h2>Compartilhamento de dados</h2>
-      <p>Não vendemos nem compartilhamos os dados dos usuários com terceiros para fins de marketing. Os dados podem ser processados por fornecedores de infraestrutura utilizados para operação do serviço (hospedagem de automação, banco de dados e provedores de inteligência artificial), estritamente para viabilizar o funcionamento do Assistente. Alguns desses fornecedores podem processar ou armazenar dados em servidores localizados fora do Brasil; nesses casos, buscamos utilizar fornecedores que adotem salvaguardas adequadas de proteção de dados, em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
-    </section>
-
-    <section id="seguranca" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">05</span>
-      <span class="index" aria-hidden="true">5</span>
-      <h2>Armazenamento e segurança</h2>
-      <p>As mensagens e o histórico de conversas são armazenados em banco de dados com controle de acesso restrito. Adotamos medidas razoáveis para proteger as informações contra acesso não autorizado, perda ou alteração indevida.</p>
-    </section>
-
-    <section id="retencao" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">06</span>
-      <span class="index" aria-hidden="true">6</span>
-      <h2>Retenção dos dados</h2>
-      <p>O histórico de conversas é mantido por até 12 (doze) meses a partir do último contato, prazo necessário para dar continuidade ao atendimento e cumprir finalidades administrativas e acadêmicas relacionadas. Após esse período, os dados são excluídos ou anonimizados, exceto quando sua manutenção for exigida por obrigação legal. O usuário pode solicitar a exclusão antecipada do seu histórico a qualquer momento.</p>
-    </section>
-
-    <section id="direitos" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">07</span>
-      <span class="index" aria-hidden="true">7</span>
-      <h2>Direitos do usuário</h2>
-      <p>Você pode, a qualquer momento, solicitar a exclusão do seu histórico de conversas ou esclarecimentos sobre os dados tratados, entrando em contato pelo e-mail abaixo.</p>
-    </section>
-
-    <section id="contato" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">08</span>
-      <span class="index" aria-hidden="true">8</span>
-      <h2>Contato</h2>
-      <p>Em caso de dúvidas sobre esta Política de Privacidade ou sobre o tratamento dos seus dados, entre em contato:</p>
-      <button type="button" class="contact-box copyable" id="copy-email" aria-label="Copiar endereço de e-mail">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9" y="9" width="12" height="12" rx="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-        <strong>aluisiogondim.academico@gmail.com</strong>
+<div id="gate">
+  <form class="gate-form" id="gate-form" autocomplete="off" novalidate>
+    <label for="gate-input" class="sr-only" id="gate-label">Telefone ou código</label>
+    <div class="gate-field">
+      <input id="gate-input" class="mascarado" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="Telefone ou código" aria-describedby="gate-status">
+      <button type="button" class="gate-btn" id="gate-olho" aria-label="Mostrar números" aria-pressed="false">
+        <svg id="olho-aberto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="olho-fechado" hidden width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/></svg>
       </button>
-    </section>
-
-    <section id="alteracoes" class="reveal card">
-      <span class="ghost-num" aria-hidden="true">09</span>
-      <span class="index" aria-hidden="true">9</span>
-      <h2>Alterações nesta política</h2>
-      <p>Esta política pode ser atualizada periodicamente. A data da última atualização está indicada no topo desta página.</p>
-    </section>
+      <button type="submit" class="gate-btn go" id="gate-go" aria-label="Continuar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      </button>
     </div>
-  </main>
+    <p id="gate-status" class="sr-only" aria-live="polite"></p>
+  </form>
 </div>
 
-<footer class="site-footer">
-  <span class="footer-brand"><img src="logo.svg" alt="" width="22" height="22"><span class="brand-name" style="color: var(--ink);">Assistente Virtual Aluisia</span></span> &middot; Atendimento via WhatsApp Business API
-</footer>
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/"><img src="img/aluisia-avatar.webp" alt="" width="30" height="30"><span class="brand-name">Aluisia</span></a>
+      <nav class="topnav" aria-label="Principal">
+        <a href="#/" data-rota="inicio">Início</a>
+        <a href="#/painel" data-rota="painel">Painel</a>
+        <a href="#/docs" data-rota="docs">Documentação</a>
+      </nav>
+      <span class="spacer"></span>
+      <span class="user-chip"><span class="dot" aria-hidden="true"></span><span class="nome" id="user-nome"></span></span>
+      <button type="button" class="btn-sair" id="btn-sair" aria-label="Sair">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        <span class="txt">Sair</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="view"></div>
+
+  <footer class="site-footer">
+    <span class="footer-brand"><img src="logo.svg" alt="" width="22" height="22"><span class="brand-name" style="color: var(--ink);">Assistente Virtual Aluisia</span></span> &middot; Painel de administração &middot; <a href="privacidade.html">Política de privacidade</a>
+  </footer>
+
+  <nav class="tabbar" aria-label="Navegação">
+    <a href="#/" data-rota="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Início</a>
+    <a href="#/painel/duvidas" data-rota="duvidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Dúvidas<span class="cont" id="tab-cont" hidden></span></a>
+    <a href="#/painel/base" data-rota="base"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Base</a>
+    <a href="#/painel" data-rota="painel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Painel</a>
+    <a href="#/docs" data-rota="docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>Ajuda</a>
+  </nav>
+</div>
 
 <div id="toast" role="status" aria-live="polite">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M20 6L9 17l-5-5"></path>
-  </svg>
-  <span id="toast-text">E-mail copiado!</span>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+  <span id="toast-text"></span>
 </div>
 
 <div id="back-to-top-wrap">
-  <svg class="ring" width="64" height="64" viewBox="0 0 64 64">
-    <circle class="ring-bg" cx="32" cy="32" r="28"></circle>
-    <circle class="ring-fg" id="ring-fg" cx="32" cy="32" r="28"></circle>
-  </svg>
-  <button id="back-to-top" aria-label="Voltar ao topo">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12 19V5"></path>
-      <path d="M5 12l7-7 7 7"></path>
-    </svg>
-  </button>
+  <svg class="ring" width="64" height="64" viewBox="0 0 64 64"><circle class="ring-bg" cx="32" cy="32" r="28"></circle><circle class="ring-fg" id="ring-fg" cx="32" cy="32" r="28"></circle></svg>
+  <button id="back-to-top" aria-label="Voltar ao topo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></button>
 </div>
 
-<script>
-  (function () {
-    var wrap = document.getElementById('back-to-top-wrap');
-    var backBtn = document.getElementById('back-to-top');
-    var ringFg = document.getElementById('ring-fg');
-    var progressFill = document.getElementById('toc-progress');
-    var CIRC = 2 * Math.PI * 28;
-
-    var update = function () {
-      var docEl = document.documentElement;
-      var scrollable = docEl.scrollHeight - docEl.clientHeight;
-      var pct = scrollable > 0 ? (docEl.scrollTop / scrollable) * 100 : 0;
-      pct = Math.min(100, Math.max(0, pct));
-
-      if (progressFill) progressFill.style.height = pct + '%';
-      if (ringFg) ringFg.style.strokeDashoffset = CIRC - (CIRC * pct) / 100;
-
-      if (window.scrollY > 480) {
-        wrap.classList.add('visible');
-      } else {
-        wrap.classList.remove('visible');
-      }
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-
-    backBtn.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    var copyBtn = document.getElementById('copy-email');
-    var toast = document.getElementById('toast');
-    var toastText = document.getElementById('toast-text');
-    var toastTimer = null;
-
-    var showToast = function (message) {
-      toastText.textContent = message;
-      toast.classList.add('visible');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () {
-        toast.classList.remove('visible');
-      }, 2200);
-    };
-
-    if (copyBtn) {
-      copyBtn.addEventListener('click', function () {
-        var email = 'aluisiogondim.academico@gmail.com';
-        var onSuccess = function () {
-          copyBtn.classList.add('copied');
-          showToast('E-mail copiado!');
-          setTimeout(function () { copyBtn.classList.remove('copied'); }, 1500);
-        };
-        var onError = function () {
-          showToast('Não foi possível copiar. E-mail: ' + email);
-        };
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(email).then(onSuccess, onError);
-        } else {
-          var tempInput = document.createElement('textarea');
-          tempInput.value = email;
-          tempInput.style.position = 'fixed';
-          tempInput.style.opacity = '0';
-          document.body.appendChild(tempInput);
-          tempInput.select();
-          try {
-            document.execCommand('copy');
-            onSuccess();
-          } catch (e) {
-            onError();
-          }
-          document.body.removeChild(tempInput);
-        }
-      });
-    }
-
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var sections = document.querySelectorAll('section.reveal');
-    if (!prefersReduced && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-      sections.forEach(function (s) { io.observe(s); });
-    } else {
-      sections.forEach(function (s) { s.classList.add('in-view'); });
-    }
-
-    var tocLinks = document.querySelectorAll('nav.toc a');
-    var byId = {};
-    tocLinks.forEach(function (a) {
-      var id = a.getAttribute('href').slice(1);
-      byId[id] = a;
-    });
-    if ('IntersectionObserver' in window) {
-      var navIo = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          var link = byId[entry.target.id];
-          if (!link) return;
-          if (entry.isIntersecting) {
-            tocLinks.forEach(function (a) { a.classList.remove('active'); });
-            link.classList.add('active');
-          }
-        });
-      }, { rootMargin: '-20% 0px -70% 0px' });
-      sections.forEach(function (s) { navIo.observe(s); });
-    }
-  })();
-</script>
-
+<script src="assets/app.js?v=1" defer></script>
 </body>
 </html>
