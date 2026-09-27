@@ -101,21 +101,20 @@ body::before {
 #gate { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 #gate .intro-login { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 #gate .marca { position: relative; width: min(560px, 78vw); aspect-ratio: 1704 / 366; opacity: 0; }
-#gate .marca img { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inset(-10% 78.4% -10% -10%); transform: translateX(39%) scale(.55); filter: drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 10px 28px rgba(0,0,0,.35)); }
+#gate .marca img { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inset(-10% 78.4% -10% -10%); transform: translateX(39%) scale(.55); opacity: 0; filter: drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 10px 28px rgba(0,0,0,.35)); transition: transform 650ms var(--ease-out), opacity 450ms var(--ease-out); }
 #gate .anel { position: absolute; left: 50%; top: 50%; width: 36%; aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(215,244,255,.7); opacity: 0; transform: translate(-50%, -50%) scale(.4); }
 #gate .ola { position: absolute; top: calc(50% + min(90px, 13vw)); left: 0; right: 0; margin: 0; text-align: center; color: rgba(255,255,255,.85); font: italic 600 clamp(1.4rem, 1rem + 1.6vw, 2rem) 'EB Garamond', Georgia, serif; opacity: 0; transform: translateY(10px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
 #gate .ola em { color: #d7f4ff; }
 #gate.ok .gate-field { border-color: #4ade80; box-shadow: 0 0 0 6px rgba(74,222,128,.15), 0 20px 45px rgba(15,23,42,.35); }
-#gate .gate-form { transition: opacity 380ms var(--ease-out), transform 480ms var(--ease-out), filter 380ms; }
+#gate .gate-form { transition: opacity 260ms var(--ease-out), transform 360ms var(--ease-out), filter 260ms; }
 #gate.fase1 .gate-form { opacity: 0; transform: scale(.86); filter: blur(4px); pointer-events: none; }
-#gate.fase1 .marca { opacity: 1; transition: opacity 300ms var(--ease-out); }
-#gate.fase1 .marca img { animation: introMarca 650ms var(--ease-out) forwards; }
-#gate.fase1 .anel { animation: introPulso 1100ms 250ms var(--ease-out) forwards; }
-#gate.fase2 .marca img { animation: none; clip-path: inset(-10% -10% -10% -10%); transform: none; transition: clip-path 700ms cubic-bezier(.65,0,.35,1), transform 700ms cubic-bezier(.65,0,.35,1); }
+#gate.fase1 .marca { opacity: 1; }
+#gate.fase1 .marca img { opacity: 1; transform: translateX(39%) scale(1); transition-delay: 180ms; }
+#gate.fase1 .anel { animation: introPulso 1000ms 350ms var(--ease-out) forwards; }
+#gate.fase2 .marca img { opacity: 1; clip-path: inset(-10% -10% -10% -10%); transform: translateX(0) scale(1); transition: clip-path 800ms cubic-bezier(.65,0,.35,1), transform 800ms cubic-bezier(.65,0,.35,1); transition-delay: 0ms; }
 #gate.fase3 .ola { opacity: 1; transform: none; }
 #gate.subir { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); transition: clip-path 900ms cubic-bezier(.65,0,.35,1); }
 #gate.subir .marca, #gate.subir .ola { opacity: 0; transform: translateY(-30px); transition: opacity 400ms var(--ease-out), transform 600ms var(--ease-out); }
-@keyframes introMarca { 0% { transform: translateX(39%) scale(.55); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateX(39%) scale(1); opacity: 1; } }
 @keyframes introPulso { 0% { opacity: .9; transform: translate(-50%, -50%) scale(.5); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); } }
 
 /* ============ Top bar ============ */

@@ -244,11 +244,11 @@
     };
     gate.addEventListener('click', pular);
     gate.classList.add('ok');
-    em(350, function () { gate.classList.add('fase1'); });
-    em(1100, function () { gate.classList.add('fase2'); });
-    em(1750, function () { gate.classList.add('fase3'); });
-    em(2800, function () { gate.classList.add('subir'); });
-    em(3750, fim);
+    em(300, function () { gate.classList.add('fase1'); });
+    em(1250, function () { gate.classList.add('fase2'); });
+    em(2000, function () { gate.classList.add('fase3'); });
+    em(3000, function () { gate.classList.add('subir'); });
+    em(3950, fim);
   }
 
   function entrar(manterPortao) {
