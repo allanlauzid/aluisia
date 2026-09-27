@@ -203,8 +203,7 @@
       if (r.ok && r.token) {
         token = r.token; guardar('al_tok', token);
         sessao = { nome: r.nome, expira_em: r.expira_em };
-        gateReset();
-        entrar();
+        tocarIntro(r.nome);
         return;
       }
       if (d.length === 4 && r.ok && r.etapa === 'codigo') {
@@ -222,8 +221,38 @@
     }).catch(function () { gateOcupado(false); gateErro(); });
   }
 
-  function entrar() {
-    $('#gate').hidden = true;
+  var introTimers = [];
+  function tocarIntro(nome) {
+    var gate = $('#gate');
+    var reduzido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduzido) { gateReset(); entrar(); return; }
+    $('#intro-nome').textContent = primeiroNome(nome) || '';
+    gateInput.blur();
+    entrar(true);
+    var em = function (ms, f) { introTimers.push(setTimeout(f, ms)); };
+    var fim = function () {
+      introTimers.forEach(clearTimeout); introTimers = [];
+      gate.hidden = true;
+      gate.className = '';
+      gate.removeEventListener('click', pular);
+      gateReset();
+    };
+    var pular = function () {
+      introTimers.forEach(clearTimeout); introTimers = [];
+      gate.classList.add('fase1', 'fase2', 'fase3', 'subir');
+      introTimers.push(setTimeout(fim, 900));
+    };
+    gate.addEventListener('click', pular);
+    gate.classList.add('ok');
+    em(350, function () { gate.classList.add('fase1'); });
+    em(1100, function () { gate.classList.add('fase2'); });
+    em(1750, function () { gate.classList.add('fase3'); });
+    em(2800, function () { gate.classList.add('subir'); });
+    em(3750, fim);
+  }
+
+  function entrar(manterPortao) {
+    if (!manterPortao) $('#gate').hidden = true;
     $('#app').hidden = false;
     document.body.classList.add('logado');
     $('#user-nome').textContent = (sessao && sessao.nome) || '';
@@ -301,7 +330,6 @@
       '<p class="pill">' + ICON.escudo + 'wa.me/' + WA_NUM + '</p>' +
       '</div>' +
       '<div class="mascote"><img src="img/aluisia-retrato.webp" alt="Aluisia, a assistente virtual, com fone de atendimento" width="800" height="800">' +
-        '<span class="balao">Oi! Posso te ajudar com o Studeo? 😊</span>' +
         '<span class="status"><span class="dot"></span>Atendendo no WhatsApp</span></div>' +
       '</div></header>';
   }
@@ -356,7 +384,120 @@
         }).join('') + '</ul>' : vazio('Nenhuma ação ainda.')) + '</section>';
       html += '</div>';
       $('#home-body').innerHTML = html;
+      carregarAnalise();
     }).catch(function (e) { if (e.message !== 'sessao') $('#home-body').innerHTML = erroBox(e.message || 'Não consegui carregar.'); });
+  }
+
+  /* ---------------- análise ---------------- */
+  var diasAnalise = 30;
+  var DIAS_SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  function pct(a, b) { return b ? Math.round(a * 1000 / b) / 10 : 0; }
+  function fmtNum1(n) { return n == null ? '—' : Number(n).toLocaleString('pt-BR', { maximumFractionDigits: 1 }); }
+  function delta(atual, antes) {
+    if (!antes && !atual) return '<span class="delta">igual</span>';
+    if (!antes) return '<span class="delta sobe">▲ novo</span>';
+    var v = Math.round((atual - antes) * 100 / antes);
+    if (v === 0) return '<span class="delta">= igual</span>';
+    return '<span class="delta ' + (v > 0 ? 'sobe' : 'desce') + '">' + (v > 0 ? '▲ ' : '▼ ') + Math.abs(v) + '%</span>';
+  }
+  function horas(h) {
+    if (h == null) return '—';
+    if (h < 1) return Math.max(1, Math.round(h * 60)) + ' min';
+    if (h < 48) return fmtNum1(h) + ' h';
+    return fmtNum1(h / 24) + ' dias';
+  }
+  function barrasV(dados, rotulo, valor, dica, altura) {
+    var W = 600, H = altura || 170, pb = 24, pt = 18, n = dados.length, max = 1;
+    dados.forEach(function (d) { if (valor(d) > max) max = valor(d); });
+    var bw = W / n, out = '';
+    dados.forEach(function (d, i) {
+      var v = valor(d), h = v > 0 ? Math.max(4, Math.round((H - pb - pt) * v / max)) : 0;
+      var x = i * bw + bw * 0.22, w = bw * 0.56, y = H - pb - h;
+      out += '<g><rect class="alvo" x="' + (i * bw) + '" y="0" width="' + bw + '" height="' + H + '" fill="transparent"><title>' + esc(dica(d)) + '</title></rect>';
+      if (h) out += '<path class="barra" d="M' + x.toFixed(1) + ',' + (H - pb) + 'V' + (y + 4) + 'q0,-4 4,-4h' + (w - 8).toFixed(1) + 'q4,0 4,4V' + (H - pb) + 'z"><title>' + esc(dica(d)) + '</title></path>';
+      if (v > 0) out += '<text class="valor" x="' + (x + w / 2).toFixed(1) + '" y="' + (y - 5) + '" text-anchor="middle">' + v + '</text>';
+      out += '<text x="' + (x + w / 2).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(rotulo(d)) + '</text></g>';
+    });
+    out += '<line class="eixo" x1="0" x2="' + W + '" y1="' + (H - pb) + '" y2="' + (H - pb) + '"></line>';
+    return '<svg class="grafico" viewBox="0 0 ' + W + ' ' + H + '" role="img">' + out + '</svg>';
+  }
+  function mapaCalor(picos) {
+    var m = {}, max = 0;
+    (picos || []).forEach(function (p) { m[p.d + '-' + p.h] = p.n; if (p.n > max) max = p.n; });
+    var cel = '';
+    for (var d = 0; d < 7; d++) {
+      cel += '<div class="mc-dia">' + DIAS_SEM[d] + '</div>';
+      for (var h = 0; h < 24; h++) {
+        var n = m[d + '-' + h] || 0, nivel = n === 0 ? 0 : Math.min(4, Math.ceil(n * 4 / max));
+        cel += '<div class="mc-cel n' + nivel + '" title="' + DIAS_SEM[d] + ', ' + h + 'h às ' + (h + 1) + 'h: ' + n + ' mensagem(ns)"></div>';
+      }
+    }
+    var horasRot = '<div></div>';
+    for (var hh = 0; hh < 24; hh++) horasRot += '<div class="mc-hora">' + (hh % 3 === 0 ? hh + 'h' : '') + '</div>';
+    var melhor = (picos || []).slice().sort(function (a, b) { return b.n - a.n; })[0];
+    return '<div class="mapa-calor" role="img" aria-label="Mensagens por dia da semana e hora">' + cel + horasRot + '</div>' +
+      '<div class="mc-legenda"><span>menos</span><i class="n0"></i><i class="n1"></i><i class="n2"></i><i class="n3"></i><i class="n4"></i><span>mais</span></div>' +
+      (melhor ? '<p class="pequeno muted" style="margin-top:10px">Horário mais movimentado: <strong>' + DIAS_SEM[melhor.d] + ', das ' + melhor.h + 'h às ' + (melhor.h + 1) + 'h</strong> (' + melhor.n + ' mensagens).</p>' : '');
+  }
+  function barraDupla(a, b, rotA, rotB) {
+    var t = a + b || 1;
+    return '<div class="barra-dupla" role="img" aria-label="' + esc(rotA + ': ' + a + ', ' + rotB + ': ' + b) + '"><span class="a" style="width:' + (a * 100 / t) + '%"></span><span class="b" style="width:' + (b * 100 / t) + '%"></span></div>' +
+      '<div class="legenda-dupla"><span><i class="a"></i>' + esc(rotA) + ' <strong>' + numero(a) + '</strong></span><span><i class="b"></i>' + esc(rotB) + ' <strong>' + numero(b) + '</strong></span></div>';
+  }
+  function carregarAnalise() {
+    var alvo = $('#home-body'); if (!alvo) return;
+    var box = $('#analise');
+    if (!box) {
+      box = document.createElement('div'); box.id = 'analise';
+      alvo.appendChild(box);
+    }
+    box.innerHTML = '<div class="analise-cab"><h2 class="serif">Análise do atendimento</h2><div class="segmentos" role="group" aria-label="Período">' +
+      [7, 30, 90].map(function (d) { return '<button type="button" data-dias="' + d + '"' + (d === diasAnalise ? ' class="on"' : '') + '>' + d + ' dias</button>'; }).join('') +
+      '</div></div><div id="analise-corpo">' + carregando('Calculando…') + '</div>';
+    $$('[data-dias]', box).forEach(function (b) { b.addEventListener('click', function () { diasAnalise = Number(b.getAttribute('data-dias')); carregarAnalise(); }); });
+    api('analise', { dias: diasAnalise }).then(function (r) {
+      if (!r.ok) throw new Error(r.erro);
+      var a = r.dados, h = '';
+      var sem = a.semana || {}, au = a.automatica || {}, tr = a.tempo_resposta || {}, ct = a.contatos || {}, b = a.base || {}, u = a.uso || {};
+      h += '<div class="stats">' +
+        '<div class="stat destaque"><div class="valor">' + (au.taxa == null ? '—' : fmtNum1(au.taxa) + '%') + '</div><div class="rotulo">Respondidas pela Aluisia sem virar dúvida</div></div>' +
+        '<div class="stat"><div class="valor">' + numero(sem.msgs) + '</div><div class="rotulo">Mensagens nos últimos 7 dias ' + delta(sem.msgs, sem.msgs_ant) + '</div></div>' +
+        '<div class="stat"><div class="valor">' + numero(sem.pessoas) + '</div><div class="rotulo">Pessoas nos últimos 7 dias ' + delta(sem.pessoas, sem.pessoas_ant) + '</div></div>' +
+        '<div class="stat"><div class="valor">' + numero(sem.duvidas) + '</div><div class="rotulo">Dúvidas nos últimos 7 dias ' + delta(sem.duvidas, sem.duvidas_ant) + '</div></div>' +
+        '</div><p class="pequeno muted" style="margin:-18px 0 28px">As setas comparam com os 7 dias anteriores. Os demais números são dos últimos ' + a.dias + ' dias. Mensagens dos admins não entram na conta.</p>';
+      h += '<section class="card"><div class="card-cab"><h2>Horários de pico</h2><span class="muted pequeno">Mensagens de alunos por dia e hora</span></div>' + mapaCalor(a.picos) + '</section>';
+      h += '<div class="grid-2" style="margin-bottom:32px">';
+      h += '<section class="card"><h2>Resposta automática</h2><p class="muted pequeno">De ' + numero(au.perguntas) + ' mensagens de alunos, quantas a Aluisia resolveu sozinha.</p>' +
+        barraDupla(Math.max((au.perguntas || 0) - (au.duvidas || 0), 0), au.duvidas || 0, 'Respondidas sozinha', 'Viraram dúvida') + '</section>';
+      h += '<section class="card"><h2>Tempo para responder dúvidas</h2>' + (tr.respondidas ? '<div class="mini-stats"><div><strong>' + horas(tr.mediana_h) + '</strong><span>tempo típico (mediana)</span></div><div><strong>' + horas(tr.media_h) + '</strong><span>média</span></div>' +
+        '<div><strong>' + pct(tr.ate_1h, tr.respondidas) + '%</strong><span>em até 1 hora</span></div><div><strong>' + pct(tr.ate_24h, tr.respondidas) + '%</strong><span>em até 24 horas</span></div></div><p class="pequeno muted" style="margin-top:12px">' + numero(tr.respondidas) + ' dúvida(s) respondida(s) no período.</p>'
+        : vazio('Nenhuma dúvida respondida no período.')) + '</section>';
+      h += '</div><div class="grid-2" style="margin-bottom:32px">';
+      h += '<section class="card"><h2>Contatos novos e recorrentes</h2><p class="muted pequeno">Quem falou no período: primeira vez ou já tinha falado antes (dentro dos 90 dias guardados).</p>' +
+        barraDupla(ct.novos || 0, ct.recorrentes || 0, 'Novos', 'Recorrentes') + '</section>';
+      var pal = a.palavras || [], pmax = pal.length ? pal[0].n : 1;
+      h += '<section class="card"><h2>Palavras mais frequentes</h2><p class="muted pequeno">Nas perguntas dos alunos, sem palavras comuns como “como” e “para”.</p>' +
+        (pal.length ? '<div class="nuvem">' + pal.map(function (w) { return '<span style="font-size:' + (0.82 + 0.6 * w.n / pmax).toFixed(2) + 'rem" title="' + w.n + ' vez(es)">' + esc(w.p) + '<small>' + w.n + '</small></span>'; }).join('') + '</div>' : vazio('Sem perguntas no período.')) + '</section>';
+      h += '</div>';
+      var top = u.top || [], tmax = top.length ? top[0].n : 1;
+      h += '<section class="card"><div class="card-cab"><h2>Itens mais usados nas respostas</h2>' + (u.desde ? '<span class="muted pequeno">Contando desde ' + dataHora(u.desde) + '</span>' : '') + '</div>' +
+        (top.length ? '<ul class="lista">' + top.map(function (x) {
+          return '<li><a class="linha" href="#/painel/base/' + x.id + '"><span class="num-badge">' + x.id + '</span><span class="corpo"><span class="titulo">' + esc(x.titulo) + '</span><span class="uso-barra"><span style="width:' + Math.max(3, x.n * 100 / tmax) + '%"></span></span></span><span class="lado"><strong>' + x.n + '</strong>×</span></a></li>';
+        }).join('') + '</ul>' : vazio(u.desde ? 'Nenhum item usado no período.' : 'A contagem começou agora. Os itens aparecem aqui conforme os alunos perguntarem.')) +
+        '<p class="pequeno muted" style="margin-top:14px"><strong>' + numero(u.nunca) + '</strong> de ' + numero(u.publicos) + ' itens para alunos ainda não foram usados em nenhuma resposta' + (u.desde ? '' : ' (a contagem acabou de começar)') + '. <a href="#/painel/base">Ver a base</a>.</p></section>';
+      h += '<div class="grid-2" style="margin-bottom:32px">';
+      h += '<section class="card"><h2>Saúde da base</h2><div class="mini-stats"><div><strong>' + numero(b.ativos) + '</strong><span>itens ativos</span></div><div><strong>' + numero(b.revisar) + '</strong><span>para revisar</span></div><div><strong>' + numero(b.de_duvidas) + '</strong><span>vieram de dúvidas</span></div></div>' +
+        '<h3>Itens criados por mês</h3>' + barrasV(b.meses || [], function (m) { return ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][Number(m.mes.slice(5)) - 1]; }, function (m) { return m.criados; },
+          function (m) { return m.mes.slice(5) + '/' + m.mes.slice(0, 4) + ': ' + m.criados + ' criado(s), ' + m.de_duvidas + ' de dúvidas'; }, 160) + '</section>';
+      var fl = a.falhas || [], totEnv = 0, totErr = 0;
+      fl.forEach(function (f) { totEnv += f.envio; totErr += f.erros; });
+      var rotSem = function (f) { return f.semana.slice(8, 10) + '/' + f.semana.slice(5, 7); };
+      h += '<section class="card"><h2>Falhas e erros</h2><p class="muted pequeno">Últimas 8 semanas. Zero é o esperado.</p>' +
+        '<h3>Mensagens que não foram entregues <span class="muted pequeno">(' + totEnv + ')</span></h3>' + barrasV(fl, rotSem, function (f) { return f.envio; }, function (f) { return 'Semana de ' + rotSem(f) + ': ' + f.envio + ' falha(s) de envio'; }, 120) +
+        '<h3>Erros nos fluxos <span class="muted pequeno">(' + totErr + ')</span></h3>' + barrasV(fl, rotSem, function (f) { return f.erros; }, function (f) { return 'Semana de ' + rotSem(f) + ': ' + f.erros + ' erro(s)'; }, 120) + '</section>';
+      h += '</div>';
+      $('#analise-corpo').innerHTML = h;
+    }).catch(function (e) { if (e.message !== 'sessao') $('#analise-corpo').innerHTML = erroBox(e.message || 'Não consegui calcular.'); });
   }
 
   /* ---------------- painel ---------------- */
