@@ -1,6 +1,6 @@
 /* Aluisia · service worker: guarda só os arquivos do site (nunca dados do painel) */
-var VERSAO = 'aluisia-v6';
-var ARQUIVOS = ['./', 'index.html', 'assets/style.css?v=6', 'assets/app.js?v=6', 'logo.svg', 'logotipo.svg',
+var VERSAO = 'aluisia-v7';
+var ARQUIVOS = ['./', 'index.html', 'assets/style.css?v=7', 'assets/app.js?v=7', 'logo.svg', 'logotipo.svg',
   'img/aluisia-avatar.webp', 'img/aluisia-retrato.webp', 'img/aluisia-16x9.webp', 'img/icon-192.png', 'manifest.webmanifest'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSAO).then(function (c) { return c.addAll(ARQUIVOS); }).then(function () { return self.skipWaiting(); }));

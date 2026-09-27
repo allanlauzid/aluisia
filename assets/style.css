@@ -156,6 +156,9 @@ header.hero.compacto { padding: 40px 24px 88px; }
 .hero-inner { max-width: 1160px; margin: 0 auto; position: relative; z-index: 1; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; }
 .brand-mark { display: block; margin: 0 0 40px; }
+.brand-linha { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin: 0 0 40px; }
+.brand-linha .brand-mark { margin: 0; }
+.btn-instalar { flex: none; }
 .brand-mark img { width: clamp(170px, 16vw, 250px); height: auto; filter: drop-shadow(0 0 1px rgba(255,255,255,0.55)) drop-shadow(0 6px 18px rgba(0,0,0,0.35)); }
 h1 { font-family: 'EB Garamond', Georgia, serif; font-weight: 700; font-size: clamp(2.6rem, 2rem + 4vw, 4.8rem); line-height: 1.05; letter-spacing: -0.02em; color: white; margin: 0 0 20px; }
 header.hero.compacto h1 { font-size: clamp(2.2rem, 1.8rem + 3vw, 3.8rem); margin-bottom: 14px; }
@@ -489,6 +492,7 @@ footer.site-footer { max-width: 1160px; margin: 0 auto; padding: 32px 24px 64px;
   h1 { font-size: 2.3rem; }
   header.hero.compacto h1 { font-size: 2rem; }
   .brand-mark { margin-bottom: 20px; }
+  .brand-linha { margin-bottom: 20px; gap: 12px; justify-content: space-between; flex-wrap: nowrap; }
   .brand-mark img { width: 150px; }
   .wrap, .shell { padding: 0 16px; }
   .chips-nav { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }

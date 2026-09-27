@@ -78,6 +78,7 @@
     info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>',
     escudo: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V5l8-3z"></path><path d="M9 12l2 2 4-4"></path></svg>',
     olho: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    baixar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
     link: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>'
   };
 
@@ -313,11 +314,46 @@
   }
   window.addEventListener('hashchange', rota);
 
+  /* ---------------- instalar como aplicativo ---------------- */
+  var pedidoInstalar = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); pedidoInstalar = e; });
+  window.addEventListener('appinstalled', function () {
+    pedidoInstalar = null;
+    var b = $('#btn-instalar'); if (b) b.remove();
+    toast('Aluisia instalada! Procure o ícone na tela do aparelho.');
+  });
+  function appInstalado() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  }
+  function instalarApp() {
+    if (pedidoInstalar) {
+      var p = pedidoInstalar; pedidoInstalar = null;
+      p.prompt();
+      if (p.userChoice) p.userChoice.then(function (r) { if (r && r.outcome === 'accepted') { var b = $('#btn-instalar'); if (b) b.remove(); } });
+      return;
+    }
+    var ua = navigator.userAgent || '';
+    var ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+    var passos = ios
+      ? '<ol><li>Abra este site no <strong>Safari</strong>.</li><li>Toque em <strong>Compartilhar</strong> (o quadrado com a seta para cima).</li><li>Toque em <strong>Adicionar à Tela de Início</strong> e depois em <strong>Adicionar</strong>.</li></ol>'
+      : '<ol><li>Abra este site no <strong>Chrome</strong> ou no <strong>Edge</strong>.</li><li>Toque ou clique no menu <strong>⋮</strong> do navegador.</li><li>Escolha <strong>Instalar app</strong> (ou <strong>Adicionar à tela inicial</strong>).</li></ol><p class="pequeno muted">Se a opção não aparecer, o app talvez já esteja instalado neste aparelho.</p>';
+    var fundo = document.createElement('div');
+    fundo.className = 'modal-fundo';
+    fundo.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="inst-tit"><div style="display:flex;align-items:center;gap:14px;margin-bottom:10px"><img src="img/icon-192.png" alt="" width="52" height="52" style="border-radius:14px;box-shadow:0 6px 16px rgba(15,23,42,.18)"><h2 id="inst-tit" style="margin:0">Instalar Aluisia</h2></div>' +
+      '<p>Com o app instalado, a Aluisia abre direto pelo ícone, em tela cheia.</p>' + passos +
+      '<div class="acoes fim"><button type="button" class="btn btn-primario" data-ok>Entendi</button></div></div>';
+    var fechar = function () { fundo.remove(); };
+    fundo.addEventListener('click', function (e) { if (e.target === fundo || e.target.closest('[data-ok]')) fechar(); });
+    document.body.appendChild(fundo);
+    $('[data-ok]', fundo).focus();
+  }
+
   /* ---------------- início ---------------- */
   function heroInicio() {
     var nome = primeiroNome(sessao && sessao.nome) || 'admin';
     return '<header class="hero"><div class="hero-inner hero-grid"><div>' +
-      '<span class="brand-mark"><img src="logotipo.svg" alt="Aluisia" width="340" height="73"></span>' +
+      '<div class="brand-linha"><span class="brand-mark"><img src="logotipo.svg" alt="Aluisia" width="340" height="73"></span>' +
+      (appInstalado() ? '' : '<button type="button" class="btn btn-vidro btn-sm btn-instalar" id="btn-instalar">' + ICON.baixar + 'Instalar Aluisia</button>') + '</div>' +
       '<div class="mascote-topo" style="margin:-4px 0 22px"><img src="img/aluisia-16x9.webp" alt="Aluisia, a assistente virtual, com fone de atendimento" width="800" height="450" style="width:100%;height:auto;max-width:420px;border-radius:22px;box-shadow:0 20px 40px rgba(2,6,23,.4),0 0 0 1px rgba(255,255,255,.2)"></div>' +
       '<h1>Olá, <em>' + esc(nome) + '</em></h1>' +
       '<p class="hero-sub">Aqui você cuida da Aluisia: responde as dúvidas dos alunos, ajusta o que ela sabe e acompanha o atendimento no WhatsApp.</p>' +
@@ -358,6 +394,7 @@
     view.innerHTML = heroInicio() + '<div class="wrap home-body" id="home-body">' +
       '<div class="stats">' + [1, 2, 3, 4, 5, 6].map(function () { return '<div class="stat skeleton" style="height:104px"></div>'; }).join('') + '</div></div>';
     $('#copiar-wa').addEventListener('click', function () { copiar(WA_URL, 'Link da Aluisia copiado!'); });
+    var bi = $('#btn-instalar'); if (bi) bi.addEventListener('click', instalarApp);
     api('resumo').then(function (r) {
       if (!r.ok) throw new Error(r.erro || 'Não consegui carregar o resumo.');
       var d = r.dados;
