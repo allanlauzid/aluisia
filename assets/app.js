@@ -174,8 +174,8 @@
     gateGo.innerHTML = sim ? '<span class="spin" aria-hidden="true"></span>' : goHtml;
   }
   function gateReset() {
-    etapa = 'inicio'; gateInput.value = ''; gateInput.placeholder = 'Telefone ou código';
-    $('#gate-label').textContent = 'Telefone ou código';
+    etapa = 'inicio'; gateInput.value = ''; gateInput.placeholder = '';
+    $('#gate-label').textContent = 'Últimos 4 dígitos do seu WhatsApp ou código do autenticador';
     gateOcupado(false);
   }
   $('#gate-olho').addEventListener('click', function () {
@@ -196,7 +196,7 @@
   function enviarLogin() {
     var d = gateInput.value.replace(/\D/g, '');
     if (gateGo.disabled) return;
-    if (!(d.length === 6 || (d.length >= 10 && d.length <= 13))) { gateErro(); return; }
+    if (!(d.length === 4 || d.length === 6)) { gateErro(); return; }
     gateOcupado(true);
     api('login', { entrada: d }).then(function (r) {
       gateOcupado(false);
@@ -207,12 +207,12 @@
         entrar();
         return;
       }
-      if (d.length !== 6 && r.ok && r.etapa === 'codigo') {
+      if (d.length === 4 && r.ok && r.etapa === 'codigo') {
         etapa = 'codigo';
         gateInput.value = '';
-        gateInput.placeholder = 'Código do WhatsApp';
+        gateInput.placeholder = '';
         $('#gate-label').textContent = 'Código recebido no WhatsApp';
-        gateStatus('Se o número for de um admin, o código chega no WhatsApp em instantes.');
+        gateStatus('Se os dígitos forem de um admin, o código chega no WhatsApp em instantes.');
         gateInput.focus();
         return;
       }
@@ -244,7 +244,7 @@
     setTimeout(function () { gateInput.focus(); }, 50);
   }
   $('#btn-sair').addEventListener('click', function () {
-    confirmar('Sair do painel?', 'Você vai precisar entrar de novo com o telefone ou o autenticador.', 'Sair').then(function (ok) { if (ok) sair(false); });
+    confirmar('Sair do painel?', 'Você vai precisar entrar de novo com os 4 dígitos ou o autenticador.', 'Sair').then(function (ok) { if (ok) sair(false); });
   });
 
   function atualizarContador(n) {
